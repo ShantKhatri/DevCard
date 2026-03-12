@@ -51,7 +51,7 @@ Each exchange is manual, error-prone, and slow. DevCard fixes this.
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-org/devcard.git
+git clone https://github.com/Dev-Card/DevCard.git
 cd devcard
 
 # Install dependencies

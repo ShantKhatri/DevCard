@@ -1,6 +1,9 @@
 <svelte:head>
   <title>DevCard — One Tap. Every Profile. Every Platform.</title>
-  <meta name="description" content="Open source developer profile exchange platform. Share all your developer profiles with one QR code." />
+  <meta
+    name="description"
+    content="Open source developer profile exchange platform. Share all your developer profiles with one QR code."
+  />
 </svelte:head>
 
 <main class="landing">
@@ -13,7 +16,12 @@
       DevCard puts every profile in one shareable QR code.
     </p>
     <div class="cta-group">
-      <a href="https://github.com/your-org/devcard" class="btn btn-primary" target="_blank" rel="noopener">
+      <a
+        href="https://github.com/Dev-Card/DevCard"
+        class="btn btn-primary"
+        target="_blank"
+        rel="noopener"
+      >
         ⭐ Star on GitHub
       </a>
       <a href="#features" class="btn btn-secondary">Learn More ↓</a>
@@ -24,38 +32,62 @@
     <div class="feature-card">
       <div class="feature-icon">🔗</div>
       <h3>One Card, All Profiles</h3>
-      <p>GitHub, LinkedIn, Twitter/X, Devfolio, GitLab, LeetCode, and 10+ more — all in one card.</p>
+      <p>
+        GitHub, LinkedIn, Twitter/X, Devfolio, GitLab, LeetCode, and 10+ more —
+        all in one card.
+      </p>
     </div>
     <div class="feature-card">
       <div class="feature-icon">⚡</div>
       <h3>Hybrid Follow Engine</h3>
-      <p>Follow on GitHub silently via API. Connect on LinkedIn with one tap in WebView. No app switching.</p>
+      <p>
+        Follow on GitHub silently via API. Connect on LinkedIn with one tap in
+        WebView. No app switching.
+      </p>
     </div>
     <div class="feature-card">
       <div class="feature-icon">💳</div>
       <h3>Context Cards</h3>
-      <p>Share your "Professional" card at conferences and "Hackathon" card at hack events. Same profiles, different contexts.</p>
+      <p>
+        Share your "Professional" card at conferences and "Hackathon" card at
+        hack events. Same profiles, different contexts.
+      </p>
     </div>
     <div class="feature-card">
       <div class="feature-icon">📱</div>
       <h3>QR + AirDrop</h3>
-      <p>Generate a QR code or share via AirDrop-style link. Works even if the receiver doesn't have the app.</p>
+      <p>
+        Generate a QR code or share via AirDrop-style link. Works even if the
+        receiver doesn't have the app.
+      </p>
     </div>
     <div class="feature-card">
       <div class="feature-icon">🔒</div>
       <h3>Privacy First</h3>
-      <p>No data monetization. No tracking. Apache 2.0 licensed. You own your data.</p>
+      <p>
+        No data monetization. No tracking. Apache 2.0 licensed. You own your
+        data.
+      </p>
     </div>
     <div class="feature-card">
       <div class="feature-icon">🌍</div>
       <h3>Open Source</h3>
-      <p>Community-driven development. Contribute, self-host, or extend with your own platforms.</p>
+      <p>
+        Community-driven development. Contribute, self-host, or extend with your
+        own platforms.
+      </p>
     </div>
   </section>
 
   <footer class="footer">
     <p>DevCard — Open Source Developer Profile Exchange</p>
-    <p>Apache 2.0 License • <a href="https://github.com/your-org/devcard" target="_blank" rel="noopener">GitHub</a></p>
+    <p>
+      Apache 2.0 License • <a
+        href="https://github.com/Dev-Card/DevCard"
+        target="_blank"
+        rel="noopener">GitHub</a
+      >
+    </p>
   </footer>
 </main>
 
@@ -78,8 +110,13 @@
   }
 
   @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
   }
 
   h1 {
@@ -158,7 +195,9 @@
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     padding: 2rem;
-    transition: transform 0.2s ease, border-color 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      border-color 0.2s ease;
   }
 
   .feature-card:hover {
@@ -195,8 +234,15 @@
   }
 
   @media (max-width: 600px) {
-    h1 { font-size: 2.5rem; }
-    .hero { padding: 3rem 0 2rem; }
-    .cta-group { flex-direction: column; align-items: center; }
+    h1 {
+      font-size: 2.5rem;
+    }
+    .hero {
+      padding: 3rem 0 2rem;
+    }
+    .cta-group {
+      flex-direction: column;
+      align-items: center;
+    }
   }
 </style>
