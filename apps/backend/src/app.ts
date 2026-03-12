@@ -15,6 +15,8 @@ import { profileRoutes } from './routes/profiles.js';
 import { cardRoutes } from './routes/cards.js';
 import { publicRoutes } from './routes/public.js';
 import { followRoutes } from './routes/follow.js';
+import { connectRoutes } from './routes/connect.js';
+import { analyticsRoutes } from './routes/analytics.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -70,6 +72,8 @@ export async function buildApp() {
   await app.register(cardRoutes, { prefix: '/api/cards' });
   await app.register(publicRoutes, { prefix: '/api/u' });
   await app.register(followRoutes, { prefix: '/api/follow' });
+  await app.register(connectRoutes, { prefix: '/api/connect' });
+  await app.register(analyticsRoutes, { prefix: '/api/analytics' });
 
   // ─── Health Check ───
   app.get('/health', async () => ({

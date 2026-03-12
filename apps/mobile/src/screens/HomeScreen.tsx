@@ -34,32 +34,42 @@ interface PlatformLink {
 export default function HomeScreen({ navigation }: Props) {
   const { user, token } = useAuth();
   const [links, setLinks] = useState<PlatformLink[]>([]);
+  const [analytics, setAnalytics] = useState<any>(null);
   const [showQR, setShowQR] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   const profileUrl = `${APP_URL}/u/${user?.username}`;
 
   useEffect(() => {
-    fetchLinks();
+    fetchData();
   }, []);
 
-  const fetchLinks = async () => {
+  const fetchData = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/profiles/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
+      const [profileRes, analyticsRes] = await Promise.all([
+        fetch(`${API_BASE_URL}/api/profiles/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch(`${API_BASE_URL}/api/analytics/overview`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+      ]);
+
+      if (profileRes.ok) {
+        const data = await profileRes.json();
         setLinks(data.platformLinks || []);
       }
+      if (analyticsRes.ok) {
+        setAnalytics(await analyticsRes.json());
+      }
     } catch (err) {
-      console.error('Failed to fetch links:', err);
+      console.error('Failed to fetch dashboard data:', err);
     }
   };
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchLinks();
+    await fetchData();
     setRefreshing(false);
   };
 
@@ -176,7 +186,15 @@ export default function HomeScreen({ navigation }: Props) {
 
           <TouchableOpacity
             style={styles.actionButton}
-            onPress={() => navigation.navigate('DevCardView', { username: user?.username || '' })}
+            onPress={() => (navigation as any).navigate('Views')}
+            activeOpacity={0.85}>
+            <Text style={styles.actionEmoji}>📈</Text>
+            <Text style={styles.actionText}>Analytics</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={() => (navigation as any).navigate('DevCardView', { username: user?.username || '' })}
             activeOpacity={0.85}>
             <Text style={styles.actionEmoji}>👁️</Text>
             <Text style={styles.actionText}>Preview</Text>
@@ -187,17 +205,17 @@ export default function HomeScreen({ navigation }: Props) {
         <View style={styles.stats}>
           <View style={styles.statItem}>
             <Text style={styles.statNumber}>{links.length}</Text>
-            <Text style={styles.statLabel}>Platforms</Text>
+            <Text style={styles.statLabel}>Links</Text>
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
-            <Text style={styles.statNumber}>0</Text>
-            <Text style={styles.statLabel}>Card Views</Text>
+            <Text style={styles.statNumber}>{analytics?.totalViews || 0}</Text>
+            <Text style={styles.statLabel}>Views</Text>
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
-            <Text style={styles.statNumber}>0</Text>
-            <Text style={styles.statLabel}>Connects</Text>
+            <Text style={styles.statNumber}>{analytics?.followsCount || 0}</Text>
+            <Text style={styles.statLabel}>Follows</Text>
           </View>
         </View>
       </ScrollView>

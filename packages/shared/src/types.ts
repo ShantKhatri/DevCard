@@ -110,6 +110,49 @@ export interface AuthResponse {
   user: User;
 }
 
+export interface CardView {
+  id: string;
+  cardId: string | null;
+  ownerId: string;
+  viewerId: string | null;
+  viewerIp: string | null;
+  viewerAgent: string | null;
+  source: string;
+  createdAt: Date | string;
+}
+
+export interface AnalyticsOverview {
+  totalViews: number;
+  uniqueViewers: number;
+  totalFollows: number;
+  viewsToday: number;
+  recentViews: Array<CardView & {
+    viewer?: {
+      displayName: string;
+      avatarUrl: string | null;
+    } | null;
+    card?: {
+      title: string;
+    } | null;
+  }>;
+}
+
+export interface ConnectedPlatform {
+  platform: string;
+  connectedAt: Date | string;
+  scopes: string;
+}
+
+export interface FollowLog {
+  id: string;
+  followerId: string;
+  targetUsername: string;
+  platform: string;
+  status: string;
+  layer: string;
+  createdAt: Date | string;
+}
+
 export interface OAuthTokenInfo {
   platform: string;
   connected: boolean;

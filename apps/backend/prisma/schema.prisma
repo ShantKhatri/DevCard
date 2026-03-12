@@ -26,6 +26,9 @@ model User {
   platformLinks PlatformLink[]
   cards         Card[]
   oauthTokens   OAuthToken[]
+  ownedViews    CardView[]     @relation("cardOwner")
+  viewedCards   CardView[]     @relation("cardViewer")
+  followLogs    FollowLog[]
 
   @@unique([provider, providerId])
   @@map("users")
@@ -56,6 +59,7 @@ model Card {
 
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   cardLinks CardLink[]
+  views     CardView[]
 
   @@map("cards")
 }
@@ -88,4 +92,35 @@ model OAuthToken {
 
   @@unique([userId, platform])
   @@map("oauth_tokens")
+}
+
+model CardView {
+  id          String   @id @default(uuid())
+  cardId      String?  @map("card_id")       // null = default profile view
+  ownerId     String   @map("owner_id")      // card/profile owner
+  viewerId    String?  @map("viewer_id")     // null = anonymous web viewer
+  viewerIp    String?  @map("viewer_ip")
+  viewerAgent String?  @map("viewer_agent")
+  source      String   @default("qr")        // "qr" | "link" | "web" | "app"
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  card    Card? @relation(fields: [cardId], references: [id], onDelete: SetNull)
+  owner   User  @relation("cardOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  viewer  User? @relation("cardViewer", fields: [viewerId], references: [id], onDelete: SetNull)
+
+  @@map("card_views")
+}
+
+model FollowLog {
+  id             String   @id @default(uuid())
+  followerId     String   @map("follower_id")
+  targetUsername String   @map("target_username")
+  platform       String
+  status         String   @default("success")    // "success" | "error"
+  layer          String                          // "api" | "webview" | "link"
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  follower User @relation(fields: [followerId], references: [id], onDelete: Cascade)
+
+  @@map("follow_logs")
 }
