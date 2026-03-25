@@ -100,6 +100,20 @@ export default function SettingsScreen() {
           </Text>
         </TouchableOpacity>
 
+        {/* Integration Settings */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionSubtitle}>Integrations</Text>
+          <TouchableOpacity
+            style={styles.settingRow}
+            onPress={() => (navigation as any).navigate('ConnectPlatforms')}>
+            <View style={styles.settingRowLeft}>
+              <Text style={styles.settingRowIcon}>🔌</Text>
+              <Text style={styles.settingRowText}>Connected Platforms</Text>
+            </View>
+            <Text style={styles.settingRowArrow}>→</Text>
+          </TouchableOpacity>
+        </View>
+
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutButtonText}>Log Out</Text>
         </TouchableOpacity>
@@ -174,6 +188,17 @@ const styles = StyleSheet.create({
     alignItems: 'center', borderWidth: 1, borderColor: COLORS.error,
   },
   logoutButtonText: { color: COLORS.error, fontWeight: '600', fontSize: FONT_SIZE.md },
-  appInfo: { alignItems: 'center', marginTop: SPACING.xxl, gap: 4 },
+  sectionContainer: { marginBottom: SPACING.xl },
+  sectionSubtitle: { fontSize: FONT_SIZE.md, fontWeight: '700', color: COLORS.textSecondary, marginBottom: SPACING.sm },
+  settingRow: { 
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    backgroundColor: COLORS.bgCard, padding: SPACING.md, borderRadius: BORDER_RADIUS.md,
+    borderWidth: 1, borderColor: COLORS.border
+  },
+  settingRowLeft: { flexDirection: 'row', alignItems: 'center' },
+  settingRowIcon: { fontSize: 20, marginRight: SPACING.sm },
+  settingRowText: { fontSize: FONT_SIZE.md, color: COLORS.textPrimary, fontWeight: '500' },
+  settingRowArrow: { fontSize: 20, color: COLORS.textMuted },
+  appInfo: { alignItems: 'center', marginTop: SPACING.xl, gap: 4 },
   appInfoText: { fontSize: FONT_SIZE.xs, color: COLORS.textMuted },
 });

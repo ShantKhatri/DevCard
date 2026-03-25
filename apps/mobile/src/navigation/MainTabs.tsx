@@ -12,6 +12,9 @@ import ScanScreen from '../screens/ScanScreen';
 import DevCardViewScreen from '../screens/DevCardViewScreen';
 import WebViewScreen from '../screens/WebViewScreen';
 
+import ConnectPlatformsScreen from '../screens/ConnectPlatformsScreen';
+import ViewsScreen from '../screens/ViewsScreen';
+
 // ─── Types ───
 
 export type MainTabsParamList = {
@@ -26,6 +29,8 @@ export type RootStackParamList = {
   MainTabs: undefined;
   DevCardView: { username: string };
   WebViewConnect: { platform: string; profileUrl: string; displayName: string };
+  ConnectPlatforms: undefined;
+  Views: undefined;
 };
 
 // ─── Tab Bar Icon ───
@@ -101,6 +106,16 @@ export default function MainTabs() {
         name="WebViewConnect"
         component={WebViewScreen}
         options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
+      />
+      <Stack.Screen
+        name="ConnectPlatforms"
+        component={ConnectPlatformsScreen}
+        options={{ title: 'Connected Platforms', headerShown: true, headerStyle: { backgroundColor: COLORS.bgPrimary }, headerTintColor: COLORS.textPrimary }}
+      />
+      <Stack.Screen
+        name="Views"
+        component={ViewsScreen}
+        options={{ title: 'Card Views Analytics', headerShown: true, headerStyle: { backgroundColor: COLORS.bgPrimary }, headerTintColor: COLORS.textPrimary }}
       />
     </Stack.Navigator>
   );

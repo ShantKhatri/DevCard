@@ -32,17 +32,44 @@ export async function followRoutes(app: FastifyInstance) {
     const accessToken = decrypt(oauthToken.accessToken);
 
     try {
+      let result;
       switch (platform) {
         case 'github':
-          return await followGitHub(accessToken, targetUsername, reply);
-
+          result = await followGitHub(accessToken, targetUsername, reply);
+          break;
         default:
           return reply.status(400).send({
             error: `API follow not supported for ${platform}. Use WebView or link instead.`,
           });
       }
+
+      // If follow succeeded (or was handled by the function without throwing), log it
+      if (reply.statusCode === 200 || reply.statusCode === 204) {
+        app.prisma.followLog.create({
+          data: {
+            followerId: userId,
+            targetUsername,
+            platform,
+            status: 'success',
+            layer: 'api',
+          },
+        }).catch(err => app.log.error('Failed to log follow:', err));
+      }
+
+      return result;
     } catch (err: any) {
       app.log.error(`Follow error for ${platform}:`, err);
+      
+      app.prisma.followLog.create({
+        data: {
+          followerId: userId,
+          targetUsername,
+          platform,
+          status: 'error',
+          layer: 'api',
+        },
+      }).catch(e => app.log.error('Failed to log follow error:', e));
+
       return reply.status(500).send({ error: 'Follow action failed', message: err.message });
     }
   });

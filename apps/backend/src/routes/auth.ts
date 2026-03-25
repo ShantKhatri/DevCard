@@ -102,6 +102,15 @@ export async function authRoutes(app: FastifyInstance) {
         },
       });
 
+      // Save the authentication token for 'user:email read:user' so we have a basic platform connection
+      const encryptedToken = (app as any).encryption ? (app as any).encryption.encrypt(tokenData.access_token) : tokenData.access_token;
+      
+      await app.prisma.oAuthToken.upsert({
+        where: { userId_platform: { userId: user.id, platform: 'github' } },
+        update: { accessToken: encryptedToken, scopes: 'read:user user:email' },
+        create: { userId: user.id, platform: 'github', accessToken: encryptedToken, scopes: 'read:user user:email' },
+      });
+
       // Generate JWT
       const token = app.jwt.sign(
         { id: user.id, username: user.username },
@@ -251,6 +260,9 @@ export async function authRoutes(app: FastifyInstance) {
         avatarUrl: true,
         accentColor: true,
         createdAt: true,
+        oauthTokens: {
+          select: { platform: true, scopes: true, createdAt: true },
+        },
       },
     });
 
@@ -258,7 +270,12 @@ export async function authRoutes(app: FastifyInstance) {
       return reply.status(404).send({ error: 'User not found' });
     }
 
-    return user;
+    const { oauthTokens, ...userData } = user;
+
+    return {
+      ...userData,
+      connectedPlatforms: oauthTokens,
+    };
   });
 
   // ─── Logout ───

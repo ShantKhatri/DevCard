@@ -20,6 +20,36 @@ export async function publicRoutes(app: FastifyInstance) {
       return reply.status(404).send({ error: 'User not found' });
     }
 
+    // Try to extract viewer from Authorization header (soft auth)
+    let viewerId = null;
+    try {
+      if (request.headers.authorization) {
+        const decoded = await request.jwtVerify() as any;
+        if (decoded?.id !== user.id) {
+          viewerId = decoded.id; // Only log if they aren't the owner
+        }
+      } else {
+        viewerId = null; // Unauthenticated viewer
+      }
+    } catch (e) {
+      // Ignored if invalid token
+    }
+
+    // Don't track if the owner is viewing their own profile
+    if (viewerId !== user.id) {
+      // Background view tracking
+      app.prisma.cardView.create({
+        data: {
+          ownerId: user.id,
+          cardId: null, // this is a profile view, not a card view
+          viewerId,
+          viewerIp: request.ip || null,
+          viewerAgent: request.headers['user-agent'] || null,
+          source: (request.query as any)?.source || 'link',
+        },
+      }).catch(err => app.log.error('Failed to log view:', err));
+    }
+
     return {
       username: user.username,
       displayName: user.displayName,
@@ -103,6 +133,29 @@ export async function publicRoutes(app: FastifyInstance) {
 
     if (!card) {
       return reply.status(404).send({ error: 'Card not found' });
+    }
+
+    let viewerId = null;
+    try {
+      if (request.headers.authorization) {
+        const decoded = await request.jwtVerify() as any;
+        if (decoded?.id !== user.id) {
+          viewerId = decoded.id;
+        }
+      }
+    } catch (e) {}
+
+    if (viewerId !== user.id) {
+      app.prisma.cardView.create({
+        data: {
+          ownerId: user.id,
+          cardId: card.id,
+          viewerId,
+          viewerIp: request.ip || null,
+          viewerAgent: request.headers['user-agent'] || null,
+          source: (request.query as any)?.source || 'qr',
+        },
+      }).catch(err => app.log.error('Failed to log card view:', err));
     }
 
     return {
