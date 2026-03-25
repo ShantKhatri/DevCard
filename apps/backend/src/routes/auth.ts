@@ -17,13 +17,19 @@ export async function authRoutes(app: FastifyInstance) {
 
   app.get('/github', async (request: FastifyRequest, reply: FastifyReply) => {
     const redirectUri = `${process.env.BACKEND_URL}/auth/github/callback`;
+    const clientState = (request.query as any).state || '';
+    const state = clientState ? `${clientState}_${generateState()}` : generateState();
+
     const params = new URLSearchParams({
-      client_id: process.env.GITHUB_CLIENT_ID || '',
+      client_id: (process.env.GITHUB_CLIENT_ID || '').trim(),
       redirect_uri: redirectUri,
       scope: 'read:user user:email',
-      state: generateState(),
+      state,
     });
-    return reply.redirect(`${GITHUB_AUTH_URL}?${params}`);
+    const authUrl = `${GITHUB_AUTH_URL}?${params}`;
+    console.log('--- GITHUB OAUTH REDIRECT ---');
+    console.log('URL:', authUrl);
+    return reply.redirect(authUrl);
   });
 
   app.get('/github/callback', async (request: FastifyRequest<{ Querystring: OAuthCallbackQuery }>, reply: FastifyReply) => {
@@ -41,8 +47,8 @@ export async function authRoutes(app: FastifyInstance) {
           Accept: 'application/json',
         },
         body: JSON.stringify({
-          client_id: process.env.GITHUB_CLIENT_ID,
-          client_secret: process.env.GITHUB_CLIENT_SECRET,
+          client_id: (process.env.GITHUB_CLIENT_ID || '').trim(),
+          client_secret: (process.env.GITHUB_CLIENT_SECRET || '').trim(),
           code,
           redirect_uri: `${process.env.BACKEND_URL}/auth/github/callback`,
         }),
@@ -128,15 +134,21 @@ export async function authRoutes(app: FastifyInstance) {
 
   app.get('/google', async (request: FastifyRequest, reply: FastifyReply) => {
     const redirectUri = `${process.env.BACKEND_URL}/auth/google/callback`;
+    const clientState = (request.query as any).state || '';
+    const state = clientState ? `${clientState}_${generateState()}` : generateState();
+
     const params = new URLSearchParams({
-      client_id: process.env.GOOGLE_CLIENT_ID || '',
+      client_id: (process.env.GOOGLE_CLIENT_ID || '').trim(),
       redirect_uri: redirectUri,
       response_type: 'code',
       scope: 'openid email profile',
-      state: generateState(),
+      state,
       access_type: 'offline',
     });
-    return reply.redirect(`${GOOGLE_AUTH_URL}?${params}`);
+    const authUrl = `${GOOGLE_AUTH_URL}?${params}`;
+    console.log('--- GOOGLE OAUTH REDIRECT ---');
+    console.log('URL:', authUrl);
+    return reply.redirect(authUrl);
   });
 
   app.get('/google/callback', async (request: FastifyRequest<{ Querystring: OAuthCallbackQuery }>, reply: FastifyReply) => {

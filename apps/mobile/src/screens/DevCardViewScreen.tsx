@@ -204,34 +204,54 @@ export default function DevCardViewScreen({ navigation, route }: Props) {
       </TouchableOpacity>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Profile Header */}
-        <View style={[styles.profileCard, { borderColor: profile.accentColor }]}>
-          <View style={styles.profileHeader}>
-            {profile.avatarUrl ? (
-              <Image source={{ uri: profile.avatarUrl }} style={styles.avatar} />
-            ) : (
-              <View style={[styles.avatar, styles.avatarPlaceholder, { backgroundColor: profile.accentColor }]}>
-                <Text style={styles.avatarText}>
-                  {profile.displayName.charAt(0).toUpperCase()}
-                </Text>
-              </View>
-            )}
-            <Text style={styles.displayName}>{profile.displayName}</Text>
-            {profile.pronouns && (
-              <Text style={styles.pronouns}>{profile.pronouns}</Text>
-            )}
-            {profile.role && (
-              <Text style={styles.role}>
+        {/* Profile Card — PREMIUM REDESIGN */}
+        <View style={[styles.premiumHeaderCard, { borderColor: profile.accentColor || COLORS.primary }]}>
+          <View style={styles.cardGlass} />
+          
+          <View style={styles.cardTop}>
+            <View style={styles.brandRow}>
+              <View style={styles.miniChip} />
+              <Text style={styles.brandText}>DevCard PRO</Text>
+            </View>
+            <Text style={styles.contactless}>📶</Text>
+          </View>
+
+          <View style={styles.cardMid}>
+            <View style={styles.avatarContainer}>
+              {profile.avatarUrl ? (
+                <Image source={{ uri: profile.avatarUrl }} style={styles.avatar} />
+              ) : (
+                <View style={[styles.avatar, styles.avatarPlaceholder, { backgroundColor: profile.accentColor || COLORS.primary }]}>
+                  <Text style={styles.avatarText}>
+                    {profile.displayName.charAt(0).toUpperCase()}
+                  </Text>
+                </View>
+              )}
+            </View>
+            <View style={styles.mainInfo}>
+              <Text style={styles.profileName}>{profile.displayName}</Text>
+              <Text style={styles.profileRole}>
                 {profile.role}{profile.company ? ` @ ${profile.company}` : ''}
               </Text>
-            )}
-            {profile.bio && <Text style={styles.bio}>{profile.bio}</Text>}
+              {profile.pronouns && (
+                <Text style={styles.pronouns}>{profile.pronouns}</Text>
+              )}
+            </View>
+          </View>
+
+          <View style={styles.cardBottom}>
+            <View style={styles.bioContainer}>
+              {profile.bio && <Text style={styles.bioText} numberOfLines={2}>{profile.bio}</Text>}
+            </View>
+            <View style={styles.cardBadge}>
+              <Text style={styles.badgeText}>PLATINUM</Text>
+            </View>
           </View>
         </View>
 
-        {/* Platform Tiles — THE CORE PRODUCT */}
+        {/* Platform Tiles Section */}
         <View style={styles.tilesSection}>
-          <Text style={styles.tilesLabel}>Connect on</Text>
+          <Text style={styles.tilesLabel}>Digital Touchpoints</Text>
           {profile.links.map(link => {
             const platform = PLATFORMS[link.platform];
             const state = followStates[link.id] || 'idle';
@@ -293,20 +313,122 @@ const styles = StyleSheet.create({
   },
   closeBtnText: { color: COLORS.textSecondary, fontSize: FONT_SIZE.md },
   scrollContent: { padding: SPACING.lg, paddingTop: SPACING.xxl },
-  profileCard: {
-    backgroundColor: COLORS.bgCard, borderRadius: BORDER_RADIUS.xl,
-    padding: SPACING.xl, borderWidth: 2, ...SHADOWS.card, marginBottom: SPACING.lg,
+  premiumHeaderCard: {
+    backgroundColor: '#0F172A',
+    borderRadius: 24,
+    padding: SPACING.xl,
+    borderWidth: 1,
+    ...SHADOWS.card,
+    marginBottom: SPACING.xl,
+    position: 'relative',
+    overflow: 'hidden',
+    aspectRatio: 1.58,
+    justifyContent: 'space-between',
   },
-  profileHeader: { alignItems: 'center' },
-  avatar: { width: 80, height: 80, borderRadius: 40, marginBottom: SPACING.md },
-  avatarPlaceholder: { alignItems: 'center', justifyContent: 'center' },
-  avatarText: { fontSize: FONT_SIZE.xxl, fontWeight: '700', color: COLORS.white },
-  displayName: { fontSize: FONT_SIZE.xxl, fontWeight: '800', color: COLORS.textPrimary },
-  pronouns: { fontSize: FONT_SIZE.sm, color: COLORS.textMuted, marginTop: 2 },
-  role: { fontSize: FONT_SIZE.md, color: COLORS.textSecondary, marginTop: SPACING.xs },
-  bio: {
-    fontSize: FONT_SIZE.sm, color: COLORS.textSecondary, textAlign: 'center',
-    marginTop: SPACING.md, lineHeight: 20,
+  cardGlass: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+  },
+  cardTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  brandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  miniChip: {
+    width: 30,
+    height: 20,
+    borderRadius: 4,
+    backgroundColor: '#94A3B8',
+    opacity: 0.5,
+  },
+  brandText: {
+    color: 'rgba(255,255,255,0.5)',
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 2,
+  },
+  contactless: {
+    fontSize: 20,
+    opacity: 0.4,
+  },
+  cardMid: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.lg,
+  },
+  avatarContainer: {
+    ...SHADOWS.card,
+    shadowOpacity: 0.3,
+  },
+  avatar: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.1)',
+  },
+  avatarPlaceholder: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarText: {
+    fontSize: 32,
+    fontWeight: '800',
+    color: COLORS.white,
+  },
+  mainInfo: {
+    flex: 1,
+  },
+  profileName: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: COLORS.white,
+    letterSpacing: 0.5,
+  },
+  profileRole: {
+    fontSize: 12,
+    color: COLORS.textSecondary,
+    fontWeight: '600',
+    marginTop: 2,
+  },
+  pronouns: {
+    fontSize: 10,
+    color: COLORS.textMuted,
+    marginTop: 4,
+    fontStyle: 'italic',
+  },
+  cardBottom: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  bioContainer: {
+    flex: 1,
+    marginRight: SPACING.md,
+  },
+  bioText: {
+    fontSize: 10,
+    color: 'rgba(255,255,255,0.4)',
+    lineHeight: 14,
+  },
+  cardBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderWidth: 0.5,
+    borderColor: 'rgba(255,255,255,0.1)',
+  },
+  badgeText: {
+    fontSize: 8,
+    fontWeight: '900',
+    color: 'rgba(255,255,255,0.6)',
+    letterSpacing: 1.5,
   },
   tilesSection: { gap: SPACING.sm },
   tilesLabel: {

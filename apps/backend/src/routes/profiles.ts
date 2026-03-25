@@ -21,6 +21,11 @@ export async function profileRoutes(app: FastifyInstance) {
         platformLinks: {
           orderBy: { displayOrder: 'asc' },
         },
+        cards: {
+          where: { isDefault: true },
+          select: { id: true },
+          take: 1,
+        },
       },
     });
 
@@ -28,8 +33,11 @@ export async function profileRoutes(app: FastifyInstance) {
       return reply.status(404).send({ error: 'User not found' });
     }
 
-    const { provider, providerId, ...profile } = user;
-    return profile;
+    const { provider, providerId, ...profileData } = user;
+    return {
+      ...profileData,
+      defaultCardId: user.cards[0]?.id || null,
+    };
   });
 
   // ─── Update Profile ───

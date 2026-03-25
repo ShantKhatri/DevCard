@@ -39,6 +39,45 @@ export async function publicRoutes(app: FastifyInstance) {
     };
   });
 
+  // ─── Shared Card View (Direct) ───
+
+  app.get('/card/:cardId', async (request: FastifyRequest<{ Params: { cardId: string } }>, reply: FastifyReply) => {
+    const { cardId } = request.params;
+
+    const card = await app.prisma.card.findUnique({
+      where: { id: cardId },
+      include: {
+        user: true,
+        cardLinks: {
+          include: { platformLink: true },
+          orderBy: { displayOrder: 'asc' },
+        },
+      },
+    });
+
+    if (!card) {
+      return reply.status(404).send({ error: 'Card not found' });
+    }
+
+    return {
+      id: card.id,
+      title: card.title,
+      owner: {
+        username: card.user.username,
+        displayName: card.user.displayName,
+        bio: card.user.bio,
+        avatarUrl: card.user.avatarUrl,
+        accentColor: card.user.accentColor,
+      },
+      links: card.cardLinks.map((cl) => ({
+        id: cl.platformLink.id,
+        platform: cl.platformLink.platform,
+        username: cl.platformLink.username,
+        url: cl.platformLink.url,
+      })),
+    };
+  });
+
   // ─── Public Card View ───
 
   app.get('/:username/card/:cardId', async (request: FastifyRequest<{ Params: { username: string; cardId: string } }>, reply: FastifyReply) => {

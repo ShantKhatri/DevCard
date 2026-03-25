@@ -6,8 +6,33 @@ import { ThemeProvider } from './src/context/ThemeContext';
 import AuthStack from './src/navigation/AuthStack';
 import MainTabs from './src/navigation/MainTabs';
 
+import { Linking } from 'react-native';
+
 function AppContent() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, login } = useAuth();
+
+  React.useEffect(() => {
+    const handleDeepLink = (event: { url: string }) => {
+      console.log('--- DEEP LINK RECEIVED ---');
+      console.log('URL:', event.url);
+      const url = new URL(event.url);
+      const token = url.searchParams.get('token');
+      if (token) {
+        console.log('Token found, logging in...');
+        login(token);
+      }
+    };
+
+    const subscription = Linking.addEventListener('url', handleDeepLink);
+
+    Linking.getInitialURL().then((url) => {
+      if (url) handleDeepLink({ url });
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [login]);
 
   if (isLoading) {
     return null; // Splash screen could go here

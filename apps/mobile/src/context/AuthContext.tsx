@@ -12,6 +12,7 @@ interface User {
   company: string | null;
   avatarUrl: string | null;
   accentColor: string;
+  defaultCardId: string | null;
 }
 
 interface AuthContextType {
@@ -40,7 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(newToken);
     // TODO: Save token to secure storage
     try {
-      const res = await fetch(`${API_BASE_URL}/auth/me`, {
+      const res = await fetch(`${API_BASE_URL}/api/profiles/me`, {
         headers: { Authorization: `Bearer ${newToken}` },
       });
       if (res.ok) {
@@ -61,7 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshUser = async () => {
     if (!token) return;
     try {
-      const res = await fetch(`${API_BASE_URL}/auth/me`, {
+      const res = await fetch(`${API_BASE_URL}/api/profiles/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {

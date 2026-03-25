@@ -37,7 +37,9 @@ export default function HomeScreen({ navigation }: Props) {
   const [showQR, setShowQR] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
-  const profileUrl = `${APP_URL}/u/${user?.username}`;
+  const profileUrl = user?.defaultCardId 
+    ? `${APP_URL}/devcard/${user.defaultCardId}`
+    : `${APP_URL}/u/${user?.username}`;
 
   useEffect(() => {
     fetchLinks();
