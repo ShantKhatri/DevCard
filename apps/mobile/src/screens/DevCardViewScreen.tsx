@@ -55,6 +55,9 @@ export default function DevCardViewScreen({ navigation, route }: Props) {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [followStates, setFollowStates] = useState<FollowState>({});
+  console.log('Viewing profile for:', username);
+  console.log('Auth token:', token ? 'Present' : 'Missing');
+  console.log('API URL:', `${API_BASE_URL}/api/u/${username}`);
 
   useEffect(() => {
     fetchProfile();
