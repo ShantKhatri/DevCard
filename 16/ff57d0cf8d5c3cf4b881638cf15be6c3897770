@@ -1,0 +1,12 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "16ff57d0cf8d5c3cf4b881638cf15be6c3897770",
+  "prompts": {},
+  "humans": {
+    "h_2de74825ee4256": {
+      "author": "Prashantkumar Khatri <khatri2105104@st.jmi.ac.in>"
+    }
+  }
+}
