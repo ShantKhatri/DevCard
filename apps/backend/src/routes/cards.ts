@@ -97,6 +97,7 @@ export async function cardRoutes(app: FastifyInstance): Promise<void> {
       if (!parsed.success) {return reply.status(400).send({ error: 'Validation failed', details: parsed.error.flatten() })}
       const updated = await cardService.updateCard(app, userId, id, parsed.data)
       if (!updated) {return reply.status(404).send({ error: 'Card not found' })}
+      console.log(updated)
       return updated
     } catch (error: any) {
       if (error?.code === 'OWNERSHIP') {return reply.status(403).send({ error: 'One or more links do not belong to your account' })}
