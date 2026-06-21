@@ -4,8 +4,8 @@ import QRCode from 'qrcode'
 import {generateUniqueSlug} from '../utils/slug.js'
 import { createTeamScehma,inviteMembers,updateTeam } from '../validations/team.validation.js';
 
-import type {PlatformLink, PublicProfile} from '@devcard/shared/src/types.js'
-import type { FastifyInstance } from 'fastify';
+import type {PlatformLink, PublicProfile} from '@devcard/shared'
+import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 
 type TeamMember = PublicProfile & {
     teamRole: TeamRole
